@@ -12,6 +12,9 @@ struct BetterGenStrings: ParsableCommand {
   var dryRun: Bool
 
   func run() throws {
+    var outputPath = self.outputPath
+    outputPath = refineOutPath(outputPath)
+    
     var inputString: String
 
     if let input = input {
@@ -42,10 +45,10 @@ struct BetterGenStrings: ParsableCommand {
       }
     }
 
-    print(inputString)
 
     if dryRun {
-      print("This is only dry run, skip writing")
+      print("This is only dry run, skip writing. Result:")
+      print(inputString)
     } else {
       try! inputString.write(toFile: outputPath, atomically: true, encoding: .utf8)
       print("All the content has been write to:", outputPath)
@@ -70,6 +73,16 @@ struct BetterGenStrings: ParsableCommand {
     try fileData.write(to: tempFileURL)
 
     return tempFileURL
+  }
+  
+  private func refineOutPath(_ outPath: String) -> String {
+    if outputPath.hasPrefix("/") {
+      return outputPath
+    }
+    guard let url = URL(string: outputPath, relativeTo: URL(string: FileManager.default.currentDirectoryPath)) else {
+      return outputPath
+    }
+    return url.standardized.absoluteString
   }
 }
 
