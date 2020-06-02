@@ -15,6 +15,8 @@ struct BetterGenStrings: ParsableCommand {
     var outputPath = self.outputPath
     outputPath = refineOutPath(outputPath)
     
+    print("Output path:", outputPath)
+    
     var inputString: String
 
     if let input = input {
@@ -44,7 +46,6 @@ struct BetterGenStrings: ParsableCommand {
         }
       }
     }
-
 
     if dryRun {
       print("This is only dry run, skip writing. Result:")
@@ -79,7 +80,7 @@ struct BetterGenStrings: ParsableCommand {
     if outputPath.hasPrefix("/") {
       return outputPath
     }
-    guard let url = URL(string: outputPath, relativeTo: URL(string: FileManager.default.currentDirectoryPath)) else {
+    guard let url = URL(string: FileManager.default.currentDirectoryPath)?.appendingPathComponent(outPath) else {
       return outputPath
     }
     return url.standardized.absoluteString
