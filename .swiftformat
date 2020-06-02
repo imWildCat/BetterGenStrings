@@ -1,0 +1,5 @@
+--exclude Pods/
+
+--indent 2
+
+--enable redundantNilInit
