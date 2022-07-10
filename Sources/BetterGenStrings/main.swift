@@ -14,9 +14,9 @@ struct BetterGenStrings: ParsableCommand {
   func run() throws {
     var outputPath = self.outputPath
     outputPath = refineOutPath(outputPath)
-    
+
     print("Output path:", outputPath)
-    
+
     var inputString: String
 
     if let input = input {
@@ -51,7 +51,7 @@ struct BetterGenStrings: ParsableCommand {
       print("This is only dry run, skip writing. Result:")
       print(inputString)
     } else {
-      try! inputString.write(toFile: outputPath, atomically: true, encoding: .utf8)
+      try! inputString.write(toFile: outputPath, atomically: true, encoding: )
       print("All the content has been write to:", outputPath)
     }
   }
@@ -68,14 +68,14 @@ struct BetterGenStrings: ParsableCommand {
                                                             create: true)
     let tempFileURL = temporaryDirectoryURL.appendingPathComponent("temp.strings")
 
-    guard let fileData = inputString.data(using: .utf8) else {
+    guard let fileData = inputString.data(using: .utf16LittleEndian) else {
       fatalError("Cannot convert temp string to data")
     }
     try fileData.write(to: tempFileURL)
 
     return tempFileURL
   }
-  
+
   private func refineOutPath(_ outPath: String) -> String {
     if outputPath.hasPrefix("/") {
       return outputPath
