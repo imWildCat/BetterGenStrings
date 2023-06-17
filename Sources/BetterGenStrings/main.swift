@@ -2,10 +2,10 @@ import ArgumentParser
 import Foundation
 
 struct BetterGenStrings: ParsableCommand {
-  @Option(name: .shortAndLong, help: "The input file")
-  var input: String?
+  @Option(name: .shortAndLong, help: "The input .strings file")
+  var input: String
 
-  @Argument(help: "The path of output file")
+  @Argument(help: "The path of output .strings file")
   var outputPath: String
 
   @Flag(help: "Dry run, without writing the result")
@@ -17,24 +17,9 @@ struct BetterGenStrings: ParsableCommand {
 
     print("Output path:", outputPath)
 
-    var inputString: String
+    let inputDict = NSDictionary(contentsOfFile: input)
 
-    if let input = input {
-      inputString = try String(contentsOfFile: input) // std input
-    } else {
-      inputString = readLine(strippingNewline: false) ?? ""
-    }
-
-    if inputString.isEmpty {
-      print("Error: input string is empty")
-      return
-    }
-
-    guard let tempFileURL = try? writeStringToTemp(inputString: inputString) else {
-      print("Error: cannot create temp file")
-      return
-    }
-    let inputDict = NSDictionary(contentsOf: tempFileURL)
+    var inputString = try String(contentsOfFile: input, encoding: .utf16LittleEndian)
 
     let outputDict = NSDictionary(contentsOfFile: outputPath)
 
@@ -52,7 +37,7 @@ struct BetterGenStrings: ParsableCommand {
       print("This is only dry run, skip writing. Result:")
       print(inputString)
     } else {
-      try! inputString.write(toFile: outputPath, atomically: true, encoding: .utf8)
+      try inputString.write(toFile: outputPath, atomically: true, encoding: .utf8)
       print("All the content has been write to:", outputPath)
     }
   }
