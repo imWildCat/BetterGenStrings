@@ -39,7 +39,8 @@ struct BetterGenStrings: ParsableCommand {
     let outputDict = NSDictionary(contentsOfFile: outputPath)
 
     if let inputDict = inputDict as? [String: String],
-      let outputDict = outputDict as? [String: String] {
+       let outputDict = outputDict as? [String: String]
+    {
       for (_, entry) in inputDict.enumerated() {
         if let currentValue = outputDict[entry.key] {
           inputString = inputString.replacingOccurrences(of: "\"\(entry.key)\" = \"\(entry.key)\"", with: "\"\(entry.key)\" = \"\(currentValue)\"")
@@ -51,7 +52,7 @@ struct BetterGenStrings: ParsableCommand {
       print("This is only dry run, skip writing. Result:")
       print(inputString)
     } else {
-      try! inputString.write(toFile: outputPath, atomically: true, encoding: )
+      try! inputString.write(toFile: outputPath, atomically: true, encoding: .utf8)
       print("All the content has been write to:", outputPath)
     }
   }
