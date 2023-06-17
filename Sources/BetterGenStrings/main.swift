@@ -20,7 +20,7 @@ struct BetterGenStrings: ParsableCommand {
     var inputString: String
 
     if let input = input {
-      inputString = try! String(contentsOfFile: input) // std input
+      inputString = try String(contentsOfFile: input) // std input
     } else {
       inputString = readLine(strippingNewline: false) ?? ""
     }
